@@ -1,0 +1,6 @@
+model/data/
+model/artifacts/
+__pycache__/
+*.pyc
+.env
+.venv/
