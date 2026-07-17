@@ -5,13 +5,13 @@ CREATE TABLE applications (
 
     RevolvingUtilizationOfUnsecuredLines REAL,
     age INTEGER,
-    NumberOfTime30-59DaysPastDueNotWorse INTEGER,
+    "NumberOfTime30-59DaysPastDueNotWorse" INTEGER,
     DebtRatio REAL,
     MonthlyIncome REAL,
     NumberOfOpenCreditLinesAndLoans INTEGER,
     NumberOfTimes90DaysLate INTEGER,
     NumberRealEstateLoansOrLines INTEGER,
-    NumberOfTime60-89DaysPastDueNotWorse INTEGER,
+    "NumberOfTime60-89DaysPastDueNotWorse" INTEGER,
     NumberOfDependents REAL,
 
     submitted_at TIMESTAMPTZ NOT NULL DEFAULT now()
