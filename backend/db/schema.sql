@@ -1,3 +1,6 @@
+-- This table stores the applications submitted by users. Each application can have multiple versions, 
+--and the previous version is referenced by the `previous_application_id` column. 
+--The `version` column is used to track the version of the application.
 CREATE TABLE applications (
     application_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     version INTEGER NOT NULL DEFAULT 1,
@@ -16,3 +19,13 @@ CREATE TABLE applications (
 
     submitted_at TIMESTAMPTZ NOT NULL DEFAULT now()
 )
+
+-- This table stores the predictions made by the machine learning model for each application.
+CREATE TABLE predictions (
+	prediction_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	application_id UUID NOT NULL REFERENCES applications(application_id),
+	risk_probability REAL NOT NULL CHECK(risk_probability >= 0 AND risk_probability <= 1),
+	shap_values JSONB NOT NULL,
+	model_version TEXT NOT NULL,
+	predicted_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
