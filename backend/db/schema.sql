@@ -29,3 +29,13 @@ CREATE TABLE predictions (
 	model_version TEXT NOT NULL,
 	predicted_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- This table stores the reviews made by human reviewers for each prediction.
+CREATE TABLE reviews (
+	review_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	prediction_id UUID NOT NULL REFERENCES predictions(prediction_id),
+	decision TEXT NOT NULL CHECK (decision IN ('approve', 'reject')),
+	reviewer_id TEXT NOT NULL,
+	override_reason TEXT,
+	reviewed_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
