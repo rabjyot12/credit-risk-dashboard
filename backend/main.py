@@ -1,11 +1,19 @@
 from fastapi import FastAPI, HTTPException
-from backend.schemas import ApplicationInput, PredictionOutput
+
+from backend.schemas import (
+    ApplicationInput, 
+    PredictionOutput,
+    ReviewInput,
+    ReviewOutput
+)
+
 from backend.db.database import get_connection
 from backend.models.ml_model import predict_and_explain
 
 import json     
 
 MODEL_VERSION = "v1.0"
+RISK_THRESHOLD = 0.5
 
 app = FastAPI()
 
@@ -106,3 +114,112 @@ def predict(application: ApplicationInput):
     finally:
         cursor.close()
         conn.close()
+
+
+@app.post("/review", response_model=ReviewOutput)
+def review(review_input: ReviewInput):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    try:
+        
+        #Step 1 Check prediction exists
+        
+        cursor.execute(
+            """
+            SELECT risk_probability
+            FROM predictions
+            WHERE prediction_id = %s;
+            """,
+            (str(review_input.prediction_id),),
+        )
+
+        row = cursor.fetchone()
+
+        if row is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Prediction not found",
+            )
+
+        risk_probability = row[0]
+
+        
+        #Step 2 Determine model decision
+        
+        model_recommends_reject = (
+            risk_probability > RISK_THRESHOLD
+        )
+
+        is_override = (
+            model_recommends_reject
+            != (review_input.decision == "reject")
+        )
+
+        
+        # Step 3 Validate override reason
+
+        if is_override and not review_input.override_reason:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "override_reason is required "
+                    "when overriding the model's recommendation"
+                ),
+            )
+
+        
+        # Step 4: Insert review
+
+        cursor.execute(
+            """
+            INSERT INTO reviews (
+                prediction_id,
+                decision,
+                reviewer_id,
+                override_reason
+            )
+            VALUES (%s, %s, %s, %s)
+            RETURNING review_id, reviewed_at;
+            """,
+            (
+                str(review_input.prediction_id),
+                review_input.decision,
+                review_input.reviewer_id,
+                review_input.override_reason,
+            ),
+        )
+
+        review_id, reviewed_at = cursor.fetchone()
+
+        conn.commit()
+
+        
+        # Step 5: Return response
+
+        return ReviewOutput(
+            review_id=review_id,
+            prediction_id=review_input.prediction_id,
+            decision=review_input.decision,
+            reviewer_id=review_input.reviewer_id,
+            override_reason=review_input.override_reason,
+            reviewed_at=reviewed_at,
+        )
+
+    except HTTPException:
+        #preserve intentional 400/404 errors
+        raise
+
+    except Exception as e:
+        conn.rollback()
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e),
+        )
+
+    finally:
+        cursor.close()
+        conn.close()
+
