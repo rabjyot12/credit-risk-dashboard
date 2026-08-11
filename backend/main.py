@@ -4,11 +4,14 @@ from backend.schemas import (
     ApplicationInput, 
     PredictionOutput,
     ReviewInput,
-    ReviewOutput
+    ReviewOutput,
+    PredictionHistoryOutput,
+    PredictionHistoryResponse
 )
 
 from backend.db.database import get_connection
 from backend.models.ml_model import predict_and_explain
+from psycopg2.extras import RealDictCursor
 
 import json     
 
@@ -223,3 +226,105 @@ def review(review_input: ReviewInput):
         cursor.close()
         conn.close()
 
+
+@app.get(
+    "/predictions",
+    response_model=PredictionHistoryResponse
+)
+def list_predictions(
+    page: int = 1,
+    page_size: int = 20
+):
+
+    #Validate pagination parameters
+    if page < 1:
+        raise HTTPException(
+            status_code=400,
+            detail="page must be greater than or equal to 1"
+        )
+
+    if page_size < 1 or page_size > 100:
+        raise HTTPException(
+            status_code=400,
+            detail="page_size must be between 1 and 100"
+        )
+
+    offset = (page - 1) * page_size
+
+    conn = get_connection(cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
+
+    try:
+        #Step 1 Get total number of predictions
+
+        cursor.execute(
+            """
+            SELECT COUNT(*) AS total
+            FROM predictions;
+            """
+        )
+
+        total = cursor.fetchone()["total"]
+
+        # Step 2 Get paginated predictions
+
+
+        cursor.execute(
+            """
+            SELECT 
+                p.prediction_id,
+                p.application_id,
+                p.risk_probability,
+                p.model_version,
+                p.predicted_at,
+                r.review_id,
+                r.decision,
+                r.reviewer_id,
+                r.override_reason,
+                r.reviewed_at
+
+            FROM predictions p
+
+            LEFT JOIN (
+        	SELECT DISTINCT ON (prediction_id)
+            		prediction_id,
+           		review_id,
+            		decision,
+            		reviewer_id,
+            		override_reason,
+            		reviewed_at
+        	FROM reviews
+        	ORDER BY prediction_id, reviewed_at DESC NULLS LAST
+    	    ) r
+                ON p.prediction_id = r.prediction_id
+
+            ORDER BY
+                p.predicted_at DESC
+
+            LIMIT %s
+            OFFSET %s;
+            """,
+            (page_size, offset)
+        )
+
+        rows = cursor.fetchall()
+
+        # Step 3 Calculate total pages
+
+        total_pages = (
+            (total + page_size - 1) // page_size
+            if total > 0
+            else 0
+        )
+
+        return {
+            "items": rows,
+            "page": page,
+            "page_size": page_size,
+            "total": total,
+            "total_pages": total_pages
+        }
+
+    finally:
+        cursor.close()
+        conn.close()
