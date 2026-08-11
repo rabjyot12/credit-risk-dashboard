@@ -56,7 +56,9 @@ class PredictionHistoryOutput(BaseModel):
     override_reason: Optional[str] = None
     reviewed_at: Optional[datetime] = None
 
-
-
-
-
+class PredictionHistoryResponse(BaseModel):
+    items: list[PredictionHistoryOutput]
+    page: int
+    page_size: int
+    total: int
+    total_pages: int
