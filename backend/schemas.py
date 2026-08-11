@@ -43,6 +43,19 @@ class ReviewOutput(BaseModel):
     override_reason: Optional[str] = None
     reviewed_at: datetime
 
+class PredictionHistoryOutput(BaseModel):
+    prediction_id: UUID
+    application_id: UUID
+    risk_probability: float
+    model_version: str
+    predicted_at: datetime
+
+    review_id: Optional[UUID] = None
+    decision: Optional[Literal["approve", "reject"]] = None
+    reviewer_id: Optional[str] = None
+    override_reason: Optional[str] = None
+    reviewed_at: Optional[datetime] = None
+
 
 
 
