@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Literal
 from uuid import UUID
 from datetime import datetime
 
@@ -28,6 +28,21 @@ class PredictionOutput(BaseModel):
     top_features: list[FeatureContribution]
     model_version: str
     predicted_at: datetime
+
+class ReviewInput(BaseModel):
+    prediction_id: UUID
+    decision: Literal["approve", "reject"]
+    reviewer_id: str
+    override_reason: Optional[str] = None
+
+class ReviewOutput(BaseModel):
+    review_id: UUID
+    prediction_id: UUID
+    decision: Literal["approve", "reject"]
+    reviewer_id: str
+    override_reason: Optional[str] = None
+    reviewed_at: datetime
+
 
 
 
