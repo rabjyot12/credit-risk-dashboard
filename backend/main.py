@@ -5,13 +5,13 @@ from backend.schemas import (
     PredictionOutput,
     ReviewInput,
     ReviewOutput,
-    PredictionHistoryOutput,
     PredictionHistoryResponse
 )
 
 from backend.db.database import get_connection
 from backend.models.ml_model import predict_and_explain
 from psycopg2.extras import RealDictCursor
+from fastapi.middleware.cors import CORSMiddleware
 
 import json     
 
@@ -19,6 +19,15 @@ MODEL_VERSION = "v1.0"
 RISK_THRESHOLD = 0.5
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 
 @app.get("/")
 def health_check():
