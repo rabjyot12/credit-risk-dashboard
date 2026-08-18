@@ -13,39 +13,49 @@ async function fetchPredictions(page = 1, pagesize = 20) {
         return await response.json();
 
     } catch (error) {
-        throw new Error(`Could not connect to the API: $(error.message)`);
+        throw new Error(`Could not connect to the API: ${error.message}`);
     }
     
 }
 
 async function submitApplication(applicationData) {
-    const response = await fetch(`${API_BASE}/applications`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(applicationData)
-    });
+    try {
+        const response = await fetch(`${API_BASE}/applications`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(applicationData)
+        });
 
-    if (!response.ok) {
-        throw new Error(`Failed to submit application: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Failed to submit application: ${response.status}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error(`Could not submit application: ${error.message}`);
     }
-
-    return await response.json();
 }
 
 async function submitReview(reviewData) {
-    const response = await fetch(`${API_BASE}/reviews`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reviewData)
-    });
+    try {
+        const response = await fetch(`${API_BASE}/reviews`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(reviewData)
+        });
 
-    if (!response.ok) {
-        throw new Error(`Failed to submit review: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Failed to submit review: ${response.status}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error(`Could not submit review: ${error.message}`);
     }
-
-    return await response.json();
 }
