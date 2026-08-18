@@ -1,15 +1,21 @@
 const API_BASE = "http://127.0.0.1:8000";
 
 async function fetchPredictions(page = 1, pagesize = 20) {
-    const response = await fetch(
-        `${API_BASE}/predictions?page=${page}&pagesize=${pagesize}`
-    );
+    try {
+        const response = await fetch(
+            `${API_BASE}/predictions?page=${page}&pagesize=${pagesize}`
+        );
 
-    if (!response.ok) {
-        throw new Error(`Failed to fetch predictions: ${response.status}`);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch predictions: ${response.status}`);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error(`Could not connect to the API: $(error.message)`);
     }
-
-    return await response.json();
+    
 }
 
 async function submitApplication(applicationData) {
