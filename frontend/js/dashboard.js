@@ -159,18 +159,13 @@ async function loadDashboard(page = 1) {
 
         //clear table
         tbody.innerHTML = "";
+        paginationControls.innerHTML = "";
 
-        const errorRow =
-            document.createElement("tr");
-
-        const errorCell =
-            document.createElement("td");
+        const errorRow = document.createElement("tr");
+        const errorCell = document.createElement("td");
 
         errorCell.colSpan = 8;
-
-        errorCell.textContent =
-            `Unable to load predictions: ${error.message}`;
-
+        errorCell.textContent = `Unable to load predictions: ${error.message}`;
         errorRow.appendChild(errorCell);
         tbody.appendChild(errorRow);
     }

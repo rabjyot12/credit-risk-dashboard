@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Test</title>
+</head>
+
+<body>
+
+<h1>CORS Test</h1>
+
+<script>
+    console.log("JavaScript is running!");
+
+    fetch("http://127.0.0.1:8000/predictions")
+        .then(response => {
+            console.log("Response received:", response);
+            return response.json();
+        })
+        .then(data => {
+            console.log("Data received:", data);
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+</script>
+
+</body>
+</html>
