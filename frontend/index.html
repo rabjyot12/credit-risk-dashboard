@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Review Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="dashboard-view">
+        <h1>Credit Risk Review Dashboard</h1>
+        <table id="predictions-table">
+            <thead>
+                <tr>
+                    <th>Prediction</th>
+                    <th>Risk</th>
+                    <th>Risk Level</th>
+                    <th>Decision</th>
+                    <th>Model</th>
+                    <th>Predicted</th>
+                    <th>Review</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="predictions-table-body"></tbody>
+        </table>
+        <div id="pagination-controls"
+    </div>
+
+    <div id="review-view" style="display: none;">
+        <!-- we'll build this later-->
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/review.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
