@@ -6,7 +6,14 @@ function showView(viewId) {
     document.getElementById(viewId).style.display = "block";
 }
 
+function openReview(predictionId) {
+    selectedPredictionId = predictionId;
+    showView("review-view");
+    console.log("Selected prediction ID:", predictionId);
+}
+
 // this is what actually kicks off the app when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     loadDashboard(1);
 });
+
