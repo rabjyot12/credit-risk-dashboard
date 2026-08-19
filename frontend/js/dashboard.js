@@ -1,11 +1,11 @@
 function riskLevel(probability) {
     const pct = probability * 100;
 
-    if pct < 30 {
+    if (pct < 30) {
         return "Low";
     }
 
-    if pct < 50 {
+    if (pct < 50) {
         return "Medium";
     }
 
