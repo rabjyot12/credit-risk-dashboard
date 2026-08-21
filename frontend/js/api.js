@@ -41,7 +41,7 @@ async function submitApplication(applicationData) {
 
 async function submitReview(reviewData) {
     try {
-        const response = await fetch(`${API_BASE}/reviews`, {
+        const response = await fetch(`${API_BASE}/review`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -1,4 +1,5 @@
 let selectedPredictionId = null;
+let currentDashboardPage = 1;
 
 function showView(viewId) {
     document.getElementById("dashboard-view").style.display = "none";
@@ -19,7 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document
     .getElementById("back-to-dashboard")
-    .addEventListener("click", () => {
+    .addEventListener("click", async () => {
         showView("dashboard-view");
+        await loadDashboard(currentDashboardPage);
     });
 

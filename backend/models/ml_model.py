@@ -47,6 +47,16 @@ def preprocess(application_dict: dict) -> pd.DataFrame:
     df["MonthlyIncome_missing"] = df["MonthlyIncome"].isnull().astype(int)
     df["NumberOfDependents_missing"] = df["NumberOfDependents"].isnull().astype(int)
 
+    #convert numeric columns
+    df["MonthlyIncome"] = pd.to_numeric(
+    df["MonthlyIncome"],
+    errors="coerce"
+    )
+    df["NumberOfDependents"] = pd.to_numeric(
+    df["NumberOfDependents"],
+    errors="coerce"
+    )
+
     # step 4 fill missing values using training medians
     df["MonthlyIncome"] = df["MonthlyIncome"].fillna(imputation_values["MonthlyIncome"])
     df["NumberOfDependents"] = df["NumberOfDependents"].fillna(imputation_values["NumberOfDependents"])

@@ -90,6 +90,7 @@ function renderPredictionRow(prediction) {
 }
 
 async function loadDashboard(page = 1) {
+    currentDashboardPage = page;
     const tbody =
         document.getElementById("predictions-table-body");
 
