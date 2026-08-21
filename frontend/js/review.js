@@ -140,7 +140,6 @@ function renderReviewHistory(reviews) {
 
     const title = document.createElement("h2");
     title.textContent = "Review History";
-
     container.appendChild(title);
 
     if (!reviews || reviews.length === 0) {
@@ -157,9 +156,29 @@ function renderReviewHistory(reviews) {
         reviewer.textContent =
             `Reviewer: ${review.reviewer_id}`;
 
+        // Decision badge
         const decision = document.createElement("p");
-        decision.textContent =
-            `Decision: ${decisionBadge(review.decision)}`;
+
+        const decisionLabel = document.createElement("strong");
+        decisionLabel.textContent = "Decision: ";
+
+        const badge = document.createElement("span");
+        const reviewDecision = review.decision;
+
+        badge.classList.add("badge");
+
+        if (reviewDecision === "approve") {
+            badge.classList.add("badge-approved");
+        } else if (reviewDecision === "reject") {
+            badge.classList.add("badge-rejected");
+        } else {
+            badge.classList.add("badge-pending");
+        }
+
+        badge.textContent = decisionBadge(reviewDecision);
+
+        decision.appendChild(decisionLabel);
+        decision.appendChild(badge);
 
         const date = document.createElement("p");
         date.textContent =
