@@ -63,6 +63,12 @@ function renderShapBreakdown(topFeatures) {
 
     container.appendChild(title);
 
+    const disclaimer = document.createElement("p");
+    disclaimer.textContent = "Bars show each factor's relative influence on this prediction, not a percentage of risk.";
+    disclaimer.style.fontSize = "0.85em";
+    disclaimer.style.color = "#666";
+    container.appendChild(disclaimer);
+
     if (!topFeatures || topFeatures.length === 0) {
         const message = document.createElement("p");
         message.textContent = "No feature explanation available.";
