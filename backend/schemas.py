@@ -62,3 +62,12 @@ class PredictionHistoryResponse(BaseModel):
     page_size: int
     total: int
     total_pages: int
+
+class PredictionDetailOutput(BaseModel):
+    prediction_id: UUID
+    application_id: UUID
+    risk_probability: float
+    top_features: list[FeatureContribution]
+    model_version: str
+    predicted_at: datetime
+    reviews: list[ReviewOutput]
