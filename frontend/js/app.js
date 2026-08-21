@@ -9,7 +9,7 @@ function showView(viewId) {
 function openReview(predictionId) {
     selectedPredictionId = predictionId;
     showView("review-view");
-    console.log("Selected prediction ID:", predictionId);
+    loadPredictionDetail(predictionId);
 }
 
 // this is what actually kicks off the app when the page loads
