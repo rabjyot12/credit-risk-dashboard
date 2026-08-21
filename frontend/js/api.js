@@ -59,3 +59,33 @@ async function submitReview(reviewData) {
         throw new Error(`Could not submit review: ${error.message}`);
     }
 }
+
+async function fetchPredictionDetail(predictionId) {
+    try {
+        const response = await fetch(
+            `${API_BASE}/predictions/${predictionId}`
+        );
+
+        if (!response.ok) {
+            let detail = `HTTP ${response.status}`;
+
+            try {
+                const errorData = await response.json();
+                if (errorData.detail) {
+                    detail = errorData.detail;
+                }
+            } catch {
+                // Keep the HTTP status if the response isn't valid JSON
+            }
+
+            throw new Error(detail);
+        }
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error(
+            `Could not load prediction details: ${error.message}`
+        );
+    }
+}
