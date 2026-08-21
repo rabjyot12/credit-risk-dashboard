@@ -17,3 +17,9 @@ document.addEventListener("DOMContentLoaded", () => {
     loadDashboard(1);
 });
 
+document
+    .getElementById("back-to-dashboard")
+    .addEventListener("click", () => {
+        showView("dashboard-view");
+    });
+
