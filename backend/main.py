@@ -5,13 +5,15 @@ from backend.schemas import (
     PredictionOutput,
     ReviewInput,
     ReviewOutput,
-    PredictionHistoryResponse
+    PredictionHistoryResponse,
+    PredictionDetailOutput
 )
 
 from backend.db.database import get_connection
 from backend.models.ml_model import predict_and_explain
 from psycopg2.extras import RealDictCursor
 from fastapi.middleware.cors import CORSMiddleware
+from uuid import UUID
 
 import json     
 
@@ -333,6 +335,92 @@ def list_predictions(
             "total": total,
             "total_pages": total_pages
         }
+
+    finally:
+        cursor.close()
+        conn.close()
+
+@app.get(
+    "/predictions/{prediction_id}",
+    response_model=PredictionDetailOutput
+)
+def get_prediction_detail(prediction_id: UUID):
+
+    conn = get_connection(cursor_factory=RealDictCursor)
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute(
+            """
+            SELECT
+                p.prediction_id,
+                p.application_id,
+                p.risk_probability,
+                p.shap_values,
+                p.model_version,
+                p.predicted_at,
+
+                r.review_id,
+                r.decision,
+                r.reviewer_id,
+                r.override_reason,
+                r.reviewed_at
+
+            FROM predictions p
+
+            LEFT JOIN reviews r
+                ON p.prediction_id = r.prediction_id
+
+            WHERE p.prediction_id = %s
+
+            ORDER BY r.reviewed_at ASC;
+            """,
+            (str(prediction_id),)
+        )
+
+        rows = cursor.fetchall()
+
+        if not rows:
+            raise HTTPException(
+                status_code=404,
+                detail="Prediction not found"
+            )
+
+        first_row = rows[0]
+
+        reviews = []
+
+        for row in rows:
+            if row["review_id"] is not None:
+                reviews.append(
+                    ReviewOutput(
+                        review_id=row["review_id"],
+                        prediction_id=row["prediction_id"],
+                        decision=row["decision"],
+                        reviewer_id=row["reviewer_id"],
+                        override_reason=row["override_reason"],
+                        reviewed_at=row["reviewed_at"]
+                    )
+                )
+
+        return PredictionDetailOutput(
+            prediction_id=first_row["prediction_id"],
+            application_id=first_row["application_id"],
+            risk_probability=first_row["risk_probability"],
+            top_features=first_row["shap_values"],
+            model_version=first_row["model_version"],
+            predicted_at=first_row["predicted_at"],
+            reviews=reviews
+        )
+
+    except HTTPException:
+        raise
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
     finally:
         cursor.close()
