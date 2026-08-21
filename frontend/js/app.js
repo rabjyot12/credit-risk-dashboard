@@ -4,6 +4,7 @@ let currentDashboardPage = 1;
 function showView(viewId) {
     document.getElementById("dashboard-view").style.display = "none";
     document.getElementById("review-view").style.display = "none";
+    document.getElementById("new-application-view").style.display = "none";
     document.getElementById(viewId).style.display = "block";
 }
 
@@ -25,3 +26,17 @@ document
         await loadDashboard(currentDashboardPage);
     });
 
+document
+    .getElementById("new-application-button")
+    .addEventListener("click", () => {
+        showView("new-application-view");
+        renderApplicationForm();
+    });
+
+
+document
+    .getElementById("back-to-dashboard-from-form")
+    .addEventListener("click", async () => {
+        showView("dashboard-view");
+        await loadDashboard(currentDashboardPage);
+    });

@@ -9,6 +9,9 @@
 <body>
     <div id="dashboard-view">
         <h1>Credit Risk Review Dashboard</h1>
+        <button id="new-application-button">
+            + New Application
+        </button>
         <table id="predictions-table">
             <thead>
                 <tr>
@@ -28,24 +31,26 @@
     </div>
 
     <div id="review-view" style="display: none;">
-
         <button id="back-to-dashboard">
             ← Back to Dashboard
         </button>
-
         <section id="prediction-summary"></section>
-
         <section id="shap-section"></section>
-
         <section id="review-history"></section>
-
         <section id="new-review"></section>
-
+    </div>
+    
+    <div id="new-application-view" style="display: none;">
+        <button id="back-to-dashboard-from-form">
+            ← Back to Dashboard
+        </button>    
+        <section id="application-form-section"></section>
     </div>
 
     <script src="js/api.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/review.js"></script>
+    <script src="js/application.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

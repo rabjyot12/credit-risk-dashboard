@@ -20,7 +20,7 @@ async function fetchPredictions(page = 1, pagesize = 20) {
 
 async function submitApplication(applicationData) {
     try {
-        const response = await fetch(`${API_BASE}/applications`, {
+        const response = await fetch(`${API_BASE}/predict`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
