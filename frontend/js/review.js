@@ -60,13 +60,12 @@ function renderShapBreakdown(topFeatures) {
 
     const title = document.createElement("h2");
     title.textContent = "Why did the model make this prediction?";
-
     container.appendChild(title);
 
     const disclaimer = document.createElement("p");
-    disclaimer.textContent = "Bars show each factor's relative influence on this prediction, not a percentage of risk.";
-    disclaimer.style.fontSize = "0.85em";
-    disclaimer.style.color = "#666";
+    disclaimer.textContent =
+        "Bars show each factor's relative influence on this prediction, not a percentage of risk.";
+    disclaimer.classList.add("shap-disclaimer");
     container.appendChild(disclaimer);
 
     if (!topFeatures || topFeatures.length === 0) {
@@ -85,48 +84,79 @@ function renderShapBreakdown(topFeatures) {
 
     topFeatures.forEach(feature => {
         const featureContainer = document.createElement("div");
+        featureContainer.classList.add("shap-feature");
 
+        // Feature name
         const name = document.createElement("h3");
         name.textContent = feature.feature;
 
+        // Original feature value
         const value = document.createElement("p");
         value.textContent = `Value: ${feature.value}`;
 
-        const contribution = document.createElement("p");
-        contribution.textContent =
-            `SHAP Contribution: ${feature.shap_contribution.toFixed(4)}`;
+        // SHAP visualization
+        const shapChart = document.createElement("div");
+        shapChart.classList.add("shap-chart");
 
-        const impact = document.createElement("p");
-        impact.textContent =
-            feature.impact === "increases_risk"
-                ? "↑ Increases Risk"
-                : "↓ Decreases Risk";
+        // Left side = decreases risk
+        const leftSide = document.createElement("div");
+        leftSide.classList.add("shap-side", "shap-left");
 
-        const barContainer = document.createElement("div");
+        // Right side = increases risk
+        const rightSide = document.createElement("div");
+        rightSide.classList.add("shap-side", "shap-right");
 
-        const bar = document.createElement("div");
+        // Zero center line
+        const centerLine = document.createElement("div");
+        centerLine.classList.add("shap-center-line");
 
         const barWidth =
             maxShap === 0
                 ? 0
                 : (Math.abs(feature.shap_contribution) / maxShap) * 100;
 
+        const bar = document.createElement("div");
+        bar.classList.add("shap-bar");
+
         bar.style.width = `${barWidth}%`;
-        bar.style.height = "12px";
 
         if (feature.impact === "increases_risk") {
-            bar.style.backgroundColor = "#dc3545";
+            bar.classList.add("shap-increase");
+            rightSide.appendChild(bar);
         } else {
-            bar.style.backgroundColor = "#198754";
+            bar.classList.add("shap-decrease");
+            leftSide.appendChild(bar);
         }
 
-        barContainer.appendChild(bar);
+        shapChart.appendChild(leftSide);
+        shapChart.appendChild(rightSide);
+        shapChart.appendChild(centerLine);
+
+        // Contribution + direction
+        const details = document.createElement("div");
+        details.classList.add("shap-details");
+
+        const contribution = document.createElement("span");
+        contribution.textContent =
+            `SHAP Contribution: ${feature.shap_contribution.toFixed(4)}`;
+
+        const impact = document.createElement("span");
+
+        if (feature.impact === "increases_risk") {
+            impact.textContent = "↑ Increases Risk";
+            impact.classList.add("shap-impact-increase");
+        } else {
+            impact.textContent = "↓ Decreases Risk";
+            impact.classList.add("shap-impact-decrease");
+        }
+
+        details.appendChild(contribution);
+        details.appendChild(impact);
 
         featureContainer.appendChild(name);
         featureContainer.appendChild(value);
-        featureContainer.appendChild(contribution);
-        featureContainer.appendChild(impact);
-        featureContainer.appendChild(barContainer);
+        featureContainer.appendChild(shapChart);
+        featureContainer.appendChild(details);
 
         container.appendChild(featureContainer);
     });
@@ -246,6 +276,7 @@ function renderReviewForm(prediction) {
     const submitButton = document.createElement("button");
     submitButton.type = "submit";
     submitButton.textContent = "Submit Review";
+    submitButton.classList.add("primary-button");
 
     form.appendChild(reviewerLabel);
     form.appendChild(reviewerInput);
