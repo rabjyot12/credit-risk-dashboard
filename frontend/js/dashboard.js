@@ -49,8 +49,20 @@ function renderPredictionRow(prediction) {
 
     // 4. Decision
     const decisionCell = document.createElement("td");
-    decisionCell.textContent =
-        decisionBadge(prediction.decision);
+    const badge = document.createElement("span");
+    const decision = prediction.decision;
+    badge.classList.add("badge");
+
+    if (decision === "approve") {
+        badge.classList.add("badge-approved");
+    } else if (decision === "reject") {
+        badge.classList.add("badge-rejected");
+    }   else {
+        badge.classList.add("badge-pending");
+    }
+
+    badge.textContent = decisionBadge(decision);
+    decisionCell.appendChild(badge);
     row.appendChild(decisionCell);
 
 
