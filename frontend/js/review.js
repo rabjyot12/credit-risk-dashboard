@@ -250,6 +250,7 @@ function renderReviewForm(prediction) {
                 override_reason: reasonInput.value.trim() || null
             };
 
+
             await submitReview(reviewData);
 
             // Backend is the source of truth.
