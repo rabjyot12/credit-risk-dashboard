@@ -18,7 +18,7 @@ CREATE TABLE applications (
 	number_of_dependents INTEGER,
 
     submitted_at TIMESTAMPTZ NOT NULL DEFAULT now()
-)
+);
 
 -- This table stores the predictions made by the machine learning model for each application.
 CREATE TABLE predictions (
