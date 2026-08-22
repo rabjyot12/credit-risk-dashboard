@@ -95,6 +95,7 @@ function renderPredictionRow(prediction) {
     actionButton.addEventListener("click", () => {
         openReview(prediction.prediction_id);
     });
+    actionButton.classList.add("secondary-button");
     actionCell.appendChild(actionButton);
     row.appendChild(actionCell);
 
@@ -139,6 +140,7 @@ async function loadDashboard(page = 1) {
         previousButton.addEventListener("click", () => {
             loadDashboard(data.page - 1);
         });
+        previousButton.classList.add("secondary-button");
 
         paginationControls.appendChild(previousButton);
 
@@ -165,6 +167,7 @@ async function loadDashboard(page = 1) {
         nextButton.addEventListener("click", () => {
             loadDashboard(data.page + 1);
         });
+        nextButton.classList.add("secondary-button");
 
         paginationControls.appendChild(nextButton);
 

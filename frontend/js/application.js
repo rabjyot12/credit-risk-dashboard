@@ -194,6 +194,7 @@ function renderApplicationForm() {
     const submitButton = document.createElement("button");
     submitButton.type = "submit";
     submitButton.textContent = "Generate Credit Risk Prediction";
+    submitButton.classList.add("primary-button");
 
     form.appendChild(submitButton);
 
