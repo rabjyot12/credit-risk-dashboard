@@ -1,5 +1,3 @@
-const API_BASE = "http://127.0.0.1:8000";
-
 async function fetchPredictions(page = 1, pagesize = 20) {
     try {
         const response = await fetch(
