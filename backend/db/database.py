@@ -4,14 +4,8 @@ import psycopg2
 
 load_dotenv()
 
-def get_connection(cursor_factory=None):
-    conn = psycopg2.connect(
-        host=os.getenv("DB_HOST"),
-        database=os.getenv("DB_NAME"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        port=os.getenv("DB_PORT"),
-        cursor_factory=cursor_factory
-    )
-    return conn
+DATABASE_URL = os.getenv("DATABASE_URL")
 
+def get_connection(cursor_factory=None):
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=cursor_factory)
+    return conn
