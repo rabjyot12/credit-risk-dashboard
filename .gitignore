@@ -1,5 +1,6 @@
 model/data/
-model/artifacts/
+# Model artifacts are intentionally tracked because they are small,
+# version-locked to the training run, and required for deployment.
 __pycache__/
 *.pyc
 .env
